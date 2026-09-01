@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.5",
+	"Category": "",
+	"Description": "Kingdom - hex territory strategy. Pure C++ core + UE5 view.",
+	"Modules": [
+		{
+			"Name": "KingdomGame",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

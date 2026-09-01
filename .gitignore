@@ -1,0 +1,24 @@
+# UE 생성물
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Platforms/
+
+# KingdomCore 독립 빌드
+Source/KingdomCore/build/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# OS
+Thumbs.db
+Desktop.ini
