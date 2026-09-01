@@ -18,14 +18,15 @@
 
 ## KingdomCore 빌드 & 테스트 (UE 불필요)
 
-VS 개발자 명령 프롬프트에서:
+VS 개발자 명령 프롬프트에서 (리포지토리 루트 기준):
 
+```bat
+cmake -S Source/KingdomCore -B Intermediate/CMake -G Ninja
+cmake --build Intermediate/CMake
+ctest --test-dir Intermediate/CMake --output-on-failure
 ```
-cd Source/KingdomCore
-cmake -S . -B build -G Ninja
-cmake --build build
-ctest --test-dir build --output-on-failure
-```
+
+테스트 소스는 `Source/KingdomCoreTests/`에 있다 (UBT가 모듈 소스로 긁어가지 않도록 모듈 밖에 둠). CMake 빌드 디렉터리도 같은 이유로 `Intermediate/` 아래를 쓴다.
 
 ## UE 빌드
 
@@ -33,7 +34,7 @@ ctest --test-dir build --output-on-failure
 또는:
 
 ```
-"C:\Program Files\Epic Games\UE_5.5\Engine\Build\BatchFiles\Build.bat" KingdomEditor Win64 Development -project="%CD%\Kingdom.uproject" -waitmutex
+"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" KingdomEditor Win64 Development -project="%CD%\Kingdom.uproject" -waitmutex
 ```
 
 에디터에서 Play 하면 화면 좌상단에 `KingdomCore 0.0.1-phase0 | SimClock tick=10`이 찍힌다 (Phase 0 게이트).

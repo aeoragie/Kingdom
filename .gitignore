@@ -5,9 +5,6 @@ Intermediate/
 Saved/
 Platforms/
 
-# KingdomCore 독립 빌드
-Source/KingdomCore/build/
-
 # IDE
 .vs/
 .vscode/

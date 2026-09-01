@@ -6,3 +6,9 @@
 
 #include <cstddef>
 #include <cstdint>
+
+// 심볼 export 매크로. UE 모듈 빌드에서는 UBT가 KINGDOMCORE_API를
+// dllexport/dllimport로 정의해 주고, CMake 독립 빌드(정적 라이브러리)에서는 빈 값이다.
+#ifndef KINGDOMCORE_API
+	#define KINGDOMCORE_API
+#endif
