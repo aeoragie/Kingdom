@@ -3,7 +3,7 @@
 #include "KingdomCore/Command.h"
 #include "KingdomCore/CoreTypes.h"
 #include "KingdomCore/RandomStream.h"
-#include "KingdomCore/SimClock.h"
+#include "KingdomCore/SimulationClock.h"
 
 namespace Kingdom
 {
@@ -12,10 +12,10 @@ class FSimulation;
 
 // 틱마다 한 번 도는 규칙 단위(생산, 이동, 전투 …).
 // 시스템은 등록한 순서대로 돈다. 순서도 결정론의 일부다.
-class ISimSystem
+class ISimulationSystem
 {
 public:
-	virtual ~ISimSystem() = default;
+	virtual ~ISimulationSystem() = default;
 
 	virtual const char* GetName() const = 0;
 	virtual void Tick(FSimulation& Simulation) = 0;
@@ -37,11 +37,11 @@ public:
 	FSimulation(const FSimulation&) = delete;
 	FSimulation& operator=(const FSimulation&) = delete;
 
-	KINGDOMCORE_API void AddSystem(std::unique_ptr<ISimSystem> System);
+	KINGDOMCORE_API void AddSystem(std::unique_ptr<ISimulationSystem> System);
 
 	// 이름으로 시스템을 찾는다. 없으면 nullptr. 커맨드가 자기 대상 시스템을 찾을 때 쓴다.
-	KINGDOMCORE_API ISimSystem* FindSystem(const char* Name);
-	KINGDOMCORE_API const ISimSystem* FindSystem(const char* Name) const;
+	KINGDOMCORE_API ISimulationSystem* FindSystem(const char* Name);
+	KINGDOMCORE_API const ISimulationSystem* FindSystem(const char* Name) const;
 
 	// 커맨드를 제출한다. 다음 틱 처음에 처리된다. 돌려주는 값은 제출 순번.
 	KINGDOMCORE_API uint64 SubmitCommand(std::unique_ptr<ICommand> Command);
@@ -70,9 +70,9 @@ private:
 	};
 
 	uint64 Seed = 0;
-	FSimClock Clock;
+	FSimulationClock Clock;
 	FRandomStream Random;
-	std::vector<std::unique_ptr<ISimSystem>> Systems;
+	std::vector<std::unique_ptr<ISimulationSystem>> Systems;
 
 	uint64 NextSequence = 0;
 	std::vector<FPendingCommand> PendingCommands;

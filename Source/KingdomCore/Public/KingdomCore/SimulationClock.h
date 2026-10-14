@@ -8,7 +8,7 @@ namespace Kingdom
 // 게임 시간은 정수 틱으로만 흐른다. 부동소수점 누적 금지.
 // 틱 하나가 몇 초인지는 코어가 모른다 — 바깥(뷰/설정)이 정한다.
 // 배속은 틱 간격이 아니라 틱 소비 속도로 구현한다.
-class FSimClock
+class FSimulationClock
 {
 public:
 	uint64 CurrentTick() const { return Tick; }

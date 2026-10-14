@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KingdomCore/CoreStd.h"
+#include "KingdomCore/CoreStandard.h"
 
 namespace Kingdom
 {

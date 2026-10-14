@@ -13,7 +13,7 @@ FSimulation::FSimulation(uint64 InSeed)
 
 FSimulation::~FSimulation() = default;
 
-void FSimulation::AddSystem(std::unique_ptr<ISimSystem> System)
+void FSimulation::AddSystem(std::unique_ptr<ISimulationSystem> System)
 {
 	if (System)
 	{
@@ -21,13 +21,13 @@ void FSimulation::AddSystem(std::unique_ptr<ISimSystem> System)
 	}
 }
 
-ISimSystem* FSimulation::FindSystem(const char* Name)
+ISimulationSystem* FSimulation::FindSystem(const char* Name)
 {
 	if (!Name)
 	{
 		return nullptr;
 	}
-	for (const std::unique_ptr<ISimSystem>& System : Systems)
+	for (const std::unique_ptr<ISimulationSystem>& System : Systems)
 	{
 		if (std::strcmp(System->GetName(), Name) == 0)
 		{
@@ -37,7 +37,7 @@ ISimSystem* FSimulation::FindSystem(const char* Name)
 	return nullptr;
 }
 
-const ISimSystem* FSimulation::FindSystem(const char* Name) const
+const ISimulationSystem* FSimulation::FindSystem(const char* Name) const
 {
 	return const_cast<FSimulation*>(this)->FindSystem(Name);
 }
@@ -65,7 +65,7 @@ void FSimulation::TickOnce()
 	Clock.Advance(1);
 	ProcessPendingCommands();
 
-	for (const std::unique_ptr<ISimSystem>& System : Systems)
+	for (const std::unique_ptr<ISimulationSystem>& System : Systems)
 	{
 		System->Tick(*this);
 	}

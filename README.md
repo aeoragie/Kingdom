@@ -19,7 +19,7 @@
 
 - 폴더: PascalCase
 - 파일: 번호 접두는 `1.` 형식(하이픈 금지), 이름 내 공백은 `_`
-- 코드: **언리얼 코딩 컨벤션** — KingdomCore의 순수 C++에도 동일 적용 (탭 들여쓰기, Allman 중괄호, 타입 접두 `F`/`E`/`I`/`T`, UObject 계열은 `U`/`A`, bool은 `b` 접두, 함수·변수 PascalCase, 네임스페이스 PascalCase). 기본 타입은 `KingdomCore/CoreTypes.h`의 별칭(`Kingdom::uint64` 등)으로 UE와 같은 표기를 쓴다 (코어는 UE 헤더 금지이므로 표준 타입에 별칭만 씌운 것)
+- 코드: **언리얼 코딩 컨벤션** — KingdomCore의 순수 C++에도 동일 적용 (탭 들여쓰기, Allman 중괄호, 타입 접두 `F`/`E`/`I`/`T`, UObject 계열은 `U`/`A`, bool은 `b` 접두, 함수·변수 PascalCase, 네임스페이스 PascalCase, 이름은 줄여 쓰지 않음). 기본 타입은 `KingdomCore/CoreTypes.h`의 별칭(`Kingdom::uint64` 등)으로 UE와 같은 표기를 쓴다 (코어는 UE 헤더 금지이므로 표준 타입에 별칭만 씌운 것)
 
 ## KingdomCore 빌드 & 테스트 (UE 불필요)
 
@@ -42,4 +42,4 @@ ctest --test-dir Intermediate/CMake --output-on-failure
 "C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" KingdomEditor Win64 Development -project="%CD%\Kingdom.uproject" -waitmutex
 ```
 
-에디터에서 Play 하면 화면 좌상단에 `KingdomCore 0.0.1-phase0 | SimClock tick=10`이 찍힌다 (Phase 0 게이트).
+에디터에서 Play 하면 화면 좌상단에 `KingdomCore 0.0.1-phase0 | SimulationClock tick=10`이 찍힌다 (Phase 0 게이트).

@@ -12,6 +12,7 @@
 ## 작업 규칙
 - 디렉터 지시도 바로 반영하지 않는다.<br>동의하면 이유, 아니면 아닌 이유를 설명하고 반영 여부를 물은 뒤 진행한다.
 - 코드는 언리얼 코딩 컨벤션(README › 컨벤션). KingdomCore에도 같이 적용한다.
+- 이름은 줄여 쓰지 않는다(예: `Sim`이 아니라 `Simulation`). 언리얼 API가 이미 쓰는 이름(`RandRange` 등)과 업계에서 굳어진 약어(UE, GC, UI 등)만 예외.
 - KingdomCore에 UE 헤더를 넣지 않는다. UE 코드는 코어 상태를 직접 고치지 않고 커맨드만 제출한다.
 - 결정론: 정수 틱, 부동소수점 누적 금지, 확률은 코어 상태의 시드 PRNG.
 - 코어 기능은 테스트와 함께 만든다(`Source/KingdomCoreTests/`).
@@ -32,13 +33,13 @@
 
 ## 빌드
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
-- 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStd.h`가 정의해 둔다.
+- 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStandard.h`가 정의해 둔다.
 
 ## 진행 상황
 - 2026-09: 프로젝트 골격(UE 5.8, KingdomCore/KingdomGame 분리, CMake + MiniTest, 첫 게이트)
 - 2026-10-14: 기획서 사본(`Docs/`) 삭제, 기획 저장소를 기준으로 함
 
 ## 다음 할 일
-- [x] 고정 틱 루프와 결정론 난수(FSimulation, ISimSystem, FRandomStream) (2026-10-14)
+- [x] 고정 틱 루프와 결정론 난수(FSimulation, ISimulationSystem, FRandomStream) (2026-10-14)
 - [x] 커맨드 패턴(ICommand, 다음 틱 처음에 제출 순서대로 검증·적용, 커맨드 로그) (2026-10-14)
 - [ ] 1차 기반의 나머지: 세이브/로드(전체 상태 스냅샷 + 마지막 세이브 이후 커맨드 로그), 배속·일시정지, 데이터 파이프라인

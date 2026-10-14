@@ -2,18 +2,18 @@
 
 #include "Engine/Engine.h"
 
-#include "KingdomCore/SimClock.h"
+#include "KingdomCore/SimulationClock.h"
 #include "KingdomCore/Version.h"
 
 void UKingdomGameInstance::Init()
 {
 	Super::Init();
 
-	Kingdom::FSimClock Clock;
+	Kingdom::FSimulationClock Clock;
 	Clock.Advance(10);
 
 	const FString Message = FString::Printf(
-		TEXT("KingdomCore %hs | SimClock tick=%llu"),
+		TEXT("KingdomCore %hs | SimulationClock tick=%llu"),
 		Kingdom::CoreVersion(),
 		static_cast<unsigned long long>(Clock.CurrentTick()));
 

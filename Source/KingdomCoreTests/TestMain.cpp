@@ -1,7 +1,7 @@
 #include "MiniTest.h"
 
 #include "KingdomCore/RandomStream.h"
-#include "KingdomCore/SimClock.h"
+#include "KingdomCore/SimulationClock.h"
 #include "KingdomCore/Simulation.h"
 #include "KingdomCore/Version.h"
 
@@ -15,15 +15,15 @@ TEST_CASE(CoreVersion_IsNonEmpty)
 	CHECK(std::strlen(Kingdom::CoreVersion()) > 0);
 }
 
-TEST_CASE(SimClock_StartsAtZero)
+TEST_CASE(SimulationClock_StartsAtZero)
 {
-	Kingdom::FSimClock Clock;
+	Kingdom::FSimulationClock Clock;
 	CHECK(Clock.CurrentTick() == 0);
 }
 
-TEST_CASE(SimClock_AdvanceAccumulates)
+TEST_CASE(SimulationClock_AdvanceAccumulates)
 {
-	Kingdom::FSimClock Clock;
+	Kingdom::FSimulationClock Clock;
 	Clock.Advance(3);
 	Clock.Advance(0);
 	Clock.Advance(7);
@@ -92,7 +92,7 @@ namespace
 {
 
 // 테스트용 시스템: 틱마다 난수를 하나 뽑아 누적하고, 호출 순서를 기록한다
-class FProbeSystem : public Kingdom::ISimSystem
+class FProbeSystem : public Kingdom::ISimulationSystem
 {
 public:
 	FProbeSystem(const char* InName, std::vector<std::string>* InCallLog, Kingdom::uint64* InAccumulator)
@@ -176,7 +176,7 @@ namespace
 {
 
 // 시험용 상태: 값 하나를 들고 있는 시스템. 상태는 커맨드로만 바뀐다
-class FCounterSystem : public Kingdom::ISimSystem
+class FCounterSystem : public Kingdom::ISimulationSystem
 {
 public:
 	static constexpr const char* SystemName = "Counter";
