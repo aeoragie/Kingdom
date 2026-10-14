@@ -19,6 +19,7 @@
 
 ## 빌드
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
+- 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStd.h`가 정의해 둔다.
 
 ## 진행 상황
 - 2026-09: 프로젝트 골격(UE 5.8, KingdomCore/KingdomGame 분리, CMake + MiniTest, 첫 게이트)
@@ -26,4 +27,4 @@ README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발�
 
 ## 다음 할 일
 - [x] 고정 틱 루프와 결정론 난수(FSimulation, ISimSystem, FRandomStream) (2026-10-14)
-- [ ] 1차 기반의 나머지: 커맨드 패턴, 세이브/로드(시드 + 커맨드 로그), 배속·일시정지, 데이터 파이프라인
+- [ ] 1차 기반의 나머지: 커맨드 패턴, 세이브/로드(전체 상태 스냅샷 + 마지막 세이브 이후 커맨드 로그), 배속·일시정지, 데이터 파이프라인

@@ -13,7 +13,7 @@ class FRandomStream
 public:
 	using FState = std::array<uint64, 4>;
 
-	KINGDOMCORE_API explicit FRandomStream(uint64 Seed = 0);
+	explicit KINGDOMCORE_API FRandomStream(uint64 Seed = 0);
 
 	KINGDOMCORE_API void Reseed(uint64 Seed);
 

@@ -25,7 +25,7 @@ public:
 class FSimulation
 {
 public:
-	KINGDOMCORE_API explicit FSimulation(uint64 Seed);
+	explicit KINGDOMCORE_API FSimulation(uint64 Seed);
 	KINGDOMCORE_API ~FSimulation();
 
 	FSimulation(const FSimulation&) = delete;
