@@ -1,14 +1,19 @@
 # Kingdom
 
-영역을 그려가며 땅을 개발하고, 성장하는 영웅으로 그 땅을 지키는 싱글 판타지 전략 게임.
+영웅을 모아 거점을 빼앗고, 넓힌 땅의 힘으로 대륙을 통일하는 판타지 전략 게임.
 
-기획서는 [Docs/](Docs/) 참고. 개발 계획과 기술 원칙은 [Docs/6.개발과_기술.md](Docs/6.개발과_기술.md).
+## 기획서
+
+기획서는 이 저장소에 두지 않는다. 두 곳에 두면 금방 어긋난다.
+
+- 기획 저장소: https://github.com/aeoragie/Claude (`Kingdom/` 폴더, 로컬 `E:\Mine\Claude\Kingdom`)
+- Notion: https://app.notion.com/p/3cc56098610280ed9143cbd0a29039bf
+- 개발 계획과 기술 원칙은 기획서 `11.개발과기술(DEV).md`
 
 ## 구조
 
-- `Source/KingdomCore/` — 순수 C++ 시뮬레이션 코어. **UE 헤더 금지** (`CoreMinimal.h` 포함 즉시 위반). CMake로 독립 빌드/테스트 가능
-- `Source/KingdomGame/` — UE5 뷰 레이어. 코어 상태를 직접 수정하지 않고, 커맨드 제출 후 결과를 읽기만 한다
-- `Docs/` — 기획서 (Notion 미러)
+- `Source/KingdomCore/`<br>순수 C++ 시뮬레이션 코어. **UE 헤더 금지** (`CoreMinimal.h` 포함 즉시 위반). CMake로 독립 빌드/테스트 가능
+- `Source/KingdomGame/`<br>UE5 뷰 레이어. 코어 상태를 직접 수정하지 않고, 커맨드 제출 후 결과를 읽기만 한다
 
 ## 컨벤션
 
