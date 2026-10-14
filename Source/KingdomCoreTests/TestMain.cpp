@@ -169,6 +169,153 @@ TEST_CASE(Simulation_SameSeedSameResultAfter100Ticks)
 	CHECK(A.GetRandom() == B.GetRandom());
 }
 
+// ---------------------------------------------------------------------------
+// 커맨드 패턴
+
+namespace
+{
+
+// 시험용 상태: 값 하나를 들고 있는 시스템. 상태는 커맨드로만 바뀐다
+class FCounterSystem : public Kingdom::ISimSystem
+{
+public:
+	static constexpr const char* SystemName = "Counter";
+
+	const char* GetName() const override { return SystemName; }
+	void Tick(Kingdom::FSimulation&) override {}
+
+	Kingdom::int64 Value = 0;
+};
+
+FCounterSystem* FindCounter(Kingdom::FSimulation& Simulation)
+{
+	return static_cast<FCounterSystem*>(Simulation.FindSystem(FCounterSystem::SystemName));
+}
+
+const FCounterSystem* FindCounter(const Kingdom::FSimulation& Simulation)
+{
+	return static_cast<const FCounterSystem*>(Simulation.FindSystem(FCounterSystem::SystemName));
+}
+
+// 시험용 커맨드: 카운터에 더한다. 결과가 음수가 되면 거부한다
+class FAddCounterCommand : public Kingdom::ICommand
+{
+public:
+	explicit FAddCounterCommand(Kingdom::int64 InAmount)
+		: Amount(InAmount)
+	{
+	}
+
+	const char* GetName() const override { return "AddCounter"; }
+
+	Kingdom::FCommandValidation Validate(const Kingdom::FSimulation& Simulation) const override
+	{
+		const FCounterSystem* Counter = FindCounter(Simulation);
+		if (!Counter)
+		{
+			return Kingdom::FCommandValidation::Fail("no counter system");
+		}
+		if (Counter->Value + Amount < 0)
+		{
+			return Kingdom::FCommandValidation::Fail("counter would go negative");
+		}
+		return Kingdom::FCommandValidation::Ok();
+	}
+
+	void Apply(Kingdom::FSimulation& Simulation) override
+	{
+		FindCounter(Simulation)->Value += Amount;
+	}
+
+private:
+	Kingdom::int64 Amount = 0;
+};
+
+std::unique_ptr<Kingdom::FSimulation> MakeCounterSimulation(Kingdom::uint64 Seed)
+{
+	auto Simulation = std::make_unique<Kingdom::FSimulation>(Seed);
+	Simulation->AddSystem(std::make_unique<FCounterSystem>());
+	return Simulation;
+}
+
+} // namespace
+
+TEST_CASE(Command_AppliedOnNextTickNotImmediately)
+{
+	auto Simulation = MakeCounterSimulation(1);
+	Simulation->SubmitCommand(std::make_unique<FAddCounterCommand>(5));
+
+	CHECK(FindCounter(*Simulation)->Value == 0);
+	CHECK(Simulation->GetPendingCommandCount() == 1);
+
+	Simulation->Advance(1);
+
+	CHECK(FindCounter(*Simulation)->Value == 5);
+	CHECK(Simulation->GetPendingCommandCount() == 0);
+	CHECK(Simulation->GetCommandLog().size() == 1);
+	CHECK(Simulation->GetCommandLog()[0].AppliedTick == 1);
+	CHECK(Simulation->GetCommandLog()[0].bAccepted);
+}
+
+TEST_CASE(Command_InvalidIsRejectedAndStateUnchanged)
+{
+	auto Simulation = MakeCounterSimulation(1);
+	Simulation->SubmitCommand(std::make_unique<FAddCounterCommand>(-3));
+	Simulation->Advance(1);
+
+	CHECK(FindCounter(*Simulation)->Value == 0);
+	CHECK(Simulation->GetCommandLog().size() == 1);
+	CHECK(!Simulation->GetCommandLog()[0].bAccepted);
+	CHECK(std::strcmp(Simulation->GetCommandLog()[0].Reason, "counter would go negative") == 0);
+}
+
+TEST_CASE(Command_ValidatedAtApplyTimeInSubmitOrder)
+{
+	// 둘 다 제출 시점에는 유효하지만, 앞 커맨드가 적용된 뒤에는 둘째가 무효가 된다
+	auto Simulation = MakeCounterSimulation(1);
+	Simulation->SubmitCommand(std::make_unique<FAddCounterCommand>(2));
+	Simulation->Advance(1);
+
+	const Kingdom::uint64 First = Simulation->SubmitCommand(std::make_unique<FAddCounterCommand>(-2));
+	const Kingdom::uint64 Second = Simulation->SubmitCommand(std::make_unique<FAddCounterCommand>(-1));
+	CHECK(Second == First + 1);
+	Simulation->Advance(1);
+
+	const auto& Log = Simulation->GetCommandLog();
+	CHECK(Log.size() == 3);
+	CHECK(Log[1].Sequence == First && Log[1].bAccepted);
+	CHECK(Log[2].Sequence == Second && !Log[2].bAccepted);
+	CHECK(FindCounter(*Simulation)->Value == 0);
+}
+
+TEST_CASE(Command_NoSystemIsRejected)
+{
+	Kingdom::FSimulation Simulation(1);
+	Simulation.SubmitCommand(std::make_unique<FAddCounterCommand>(1));
+	Simulation.Advance(1);
+
+	CHECK(Simulation.GetCommandLog().size() == 1);
+	CHECK(!Simulation.GetCommandLog()[0].bAccepted);
+}
+
+TEST_CASE(Command_SameCommandsSameResult)
+{
+	auto A = MakeCounterSimulation(9);
+	auto B = MakeCounterSimulation(9);
+	const Kingdom::int64 Amounts[] = {3, -1, 7, -20, 4};
+	for (Kingdom::int64 Amount : Amounts)
+	{
+		A->SubmitCommand(std::make_unique<FAddCounterCommand>(Amount));
+		B->SubmitCommand(std::make_unique<FAddCounterCommand>(Amount));
+		A->Advance(2);
+		B->Advance(1);
+		B->Advance(1);
+	}
+	CHECK(FindCounter(*A)->Value == FindCounter(*B)->Value);
+	CHECK(FindCounter(*A)->Value == 13);
+	CHECK(A->GetCommandLog().size() == B->GetCommandLog().size());
+}
+
 int main()
 {
 	return MiniTest::RunAll();
