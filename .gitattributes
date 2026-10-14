@@ -12,3 +12,6 @@
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
+
+# 배치 파일은 CRLF (cmd의 라벨·goto가 LF에서 어긋날 수 있다)
+*.bat text eol=crlf

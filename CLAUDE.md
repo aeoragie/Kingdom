@@ -32,6 +32,7 @@
 - `Study/`: 언리얼 학습 노트. `01.언리얼구조(ARCHITECTURE).md`부터. 깊게 판 주제는 번호를 이어 붙인다.
 
 ## 빌드
+- `Tools/`: `GenerateProjectFiles.bat`(VS 솔루션 다시 생성), `BuildCore.bat`(코어 CMake 빌드 + 테스트), `BuildEditor.bat`(에디터 빌드). 더블클릭으로 실행. 엔진 경로가 다르면 환경 변수 `KINGDOM_UE_ROOT`.
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
 - 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStandard.h`가 정의해 둔다.
 
