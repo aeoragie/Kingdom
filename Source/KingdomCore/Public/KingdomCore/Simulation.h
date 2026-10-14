@@ -48,7 +48,7 @@ public:
 	FSimulation(const FSimulation&) = delete;
 	FSimulation& operator=(const FSimulation&) = delete;
 
-	KINGDOMCORE_API void AddSystem(std::unique_ptr<ISimulationSystem> System);
+	KINGDOMCORE_API void AddSystem(unique_ptr<ISimulationSystem> System);
 
 	// 이름으로 시스템을 찾는다. 없으면 nullptr. 커맨드가 자기 대상 시스템을 찾을 때 쓴다.
 	KINGDOMCORE_API ISimulationSystem* FindSystem(const char* Name);
@@ -58,19 +58,19 @@ public:
 	KINGDOMCORE_API void RegisterCommandType(uint32 TypeId, FCommandFactory Factory);
 
 	// 커맨드를 제출한다. 다음 틱 처음에 처리된다. 돌려주는 값은 제출 순번.
-	KINGDOMCORE_API uint64 SubmitCommand(std::unique_ptr<ICommand> Command);
+	KINGDOMCORE_API uint64 SubmitCommand(unique_ptr<ICommand> Command);
 
 	// TickCount만큼 틱을 진행한다.
 	KINGDOMCORE_API void Advance(uint32 TickCount);
 
 	// 전체 상태 스냅샷. 저장한 뒤 커맨드 로그를 비운다.
-	KINGDOMCORE_API std::vector<uint8> Save();
+	KINGDOMCORE_API vector<uint8> Save();
 
 	// 스냅샷을 불러온다. 실패하면 false.
 	// 형식 검사는 상태를 바꾸기 전에 끝내지만, 시스템이 자기 상태를 읽다 실패하면
 	// 앞선 시스템은 이미 바뀌었을 수 있다. 그래서 새로 만든 시뮬레이션에 불러오고,
 	// 실패하면 그 시뮬레이션을 버린다.
-	KINGDOMCORE_API bool Load(const std::vector<uint8>& Bytes);
+	KINGDOMCORE_API bool Load(const vector<uint8>& Bytes);
 
 	uint64 CurrentTick() const { return Clock.CurrentTick(); }
 	uint64 GetSeed() const { return Seed; }
@@ -79,21 +79,21 @@ public:
 	const FRandomStream& GetRandom() const { return Random; }
 
 	// 처리된 커맨드 기록(받아들인 것과 거부한 것 모두, 마지막 세이브 이후)
-	const std::vector<FCommandRecord>& GetCommandLog() const { return CommandLog; }
+	const vector<FCommandRecord>& GetCommandLog() const { return CommandLog; }
 	std::size_t GetPendingCommandCount() const { return PendingCommands.size(); }
 
 private:
 	void TickOnce();
 	void ProcessPendingCommands();
 
-	std::shared_ptr<ICommand> CreateCommand(uint32 TypeId) const;
+	shared_ptr<ICommand> CreateCommand(uint32 TypeId) const;
 	void SaveCommand(FArchiveWriter& Writer, const ICommand& Command) const;
-	std::shared_ptr<ICommand> LoadCommand(FArchiveReader& Reader) const;
+	shared_ptr<ICommand> LoadCommand(FArchiveReader& Reader) const;
 
 	struct FPendingCommand
 	{
 		uint64 Sequence = 0;
-		std::shared_ptr<ICommand> Command;
+		shared_ptr<ICommand> Command;
 	};
 
 	struct FCommandType
@@ -105,12 +105,12 @@ private:
 	uint64 Seed = 0;
 	FSimulationClock Clock;
 	FRandomStream Random;
-	std::vector<std::unique_ptr<ISimulationSystem>> Systems;
-	std::vector<FCommandType> CommandTypes;
+	vector<unique_ptr<ISimulationSystem>> Systems;
+	vector<FCommandType> CommandTypes;
 
 	uint64 NextSequence = 0;
-	std::vector<FPendingCommand> PendingCommands;
-	std::vector<FCommandRecord> CommandLog;
+	vector<FPendingCommand> PendingCommands;
+	vector<FCommandRecord> CommandLog;
 };
 
 } // namespace Kingdom

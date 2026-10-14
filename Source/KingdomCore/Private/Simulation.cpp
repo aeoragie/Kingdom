@@ -23,7 +23,7 @@ FSimulation::FSimulation(uint64 InSeed)
 
 FSimulation::~FSimulation() = default;
 
-void FSimulation::AddSystem(std::unique_ptr<ISimulationSystem> System)
+void FSimulation::AddSystem(unique_ptr<ISimulationSystem> System)
 {
 	if (System)
 	{
@@ -37,7 +37,7 @@ ISimulationSystem* FSimulation::FindSystem(const char* Name)
 	{
 		return nullptr;
 	}
-	for (const std::unique_ptr<ISimulationSystem>& System : Systems)
+	for (const unique_ptr<ISimulationSystem>& System : Systems)
 	{
 		if (std::strcmp(System->GetName(), Name) == 0)
 		{
@@ -65,12 +65,12 @@ void FSimulation::RegisterCommandType(uint32 TypeId, FCommandFactory Factory)
 	CommandTypes.push_back({TypeId, Factory});
 }
 
-uint64 FSimulation::SubmitCommand(std::unique_ptr<ICommand> Command)
+uint64 FSimulation::SubmitCommand(unique_ptr<ICommand> Command)
 {
 	const uint64 Sequence = NextSequence++;
 	if (Command)
 	{
-		PendingCommands.push_back({Sequence, std::shared_ptr<ICommand>(std::move(Command))});
+		PendingCommands.push_back({Sequence, shared_ptr<ICommand>(std::move(Command))});
 	}
 	return Sequence;
 }
@@ -88,7 +88,7 @@ void FSimulation::TickOnce()
 	Clock.Advance(1);
 	ProcessPendingCommands();
 
-	for (const std::unique_ptr<ISimulationSystem>& System : Systems)
+	for (const unique_ptr<ISimulationSystem>& System : Systems)
 	{
 		System->Tick(*this);
 	}
@@ -97,7 +97,7 @@ void FSimulation::TickOnce()
 void FSimulation::ProcessPendingCommands()
 {
 	// 처리 중에 새로 제출된 커맨드는 다음 틱으로 넘긴다
-	std::vector<FPendingCommand> Batch;
+	vector<FPendingCommand> Batch;
 	Batch.swap(PendingCommands);
 
 	for (FPendingCommand& Pending : Batch)
@@ -120,13 +120,13 @@ void FSimulation::ProcessPendingCommands()
 	}
 }
 
-std::shared_ptr<ICommand> FSimulation::CreateCommand(uint32 TypeId) const
+shared_ptr<ICommand> FSimulation::CreateCommand(uint32 TypeId) const
 {
 	for (const FCommandType& Type : CommandTypes)
 	{
 		if (Type.TypeId == TypeId && Type.Factory)
 		{
-			return std::shared_ptr<ICommand>(Type.Factory());
+			return shared_ptr<ICommand>(Type.Factory());
 		}
 	}
 	return nullptr;
@@ -141,16 +141,16 @@ void FSimulation::SaveCommand(FArchiveWriter& Writer, const ICommand& Command) c
 	Writer.WriteBytes(Payload.GetBuffer());
 }
 
-std::shared_ptr<ICommand> FSimulation::LoadCommand(FArchiveReader& Reader) const
+shared_ptr<ICommand> FSimulation::LoadCommand(FArchiveReader& Reader) const
 {
 	const uint32 TypeId = Reader.ReadUInt32();
-	const std::vector<uint8> PayloadBytes = Reader.ReadBytes();
+	const vector<uint8> PayloadBytes = Reader.ReadBytes();
 	if (Reader.HasError())
 	{
 		return nullptr;
 	}
 
-	std::shared_ptr<ICommand> Command = CreateCommand(TypeId);
+	shared_ptr<ICommand> Command = CreateCommand(TypeId);
 	if (!Command)
 	{
 		return nullptr;
@@ -164,7 +164,7 @@ std::shared_ptr<ICommand> FSimulation::LoadCommand(FArchiveReader& Reader) const
 	return Command;
 }
 
-std::vector<uint8> FSimulation::Save()
+vector<uint8> FSimulation::Save()
 {
 	FArchiveWriter Writer;
 
@@ -181,7 +181,7 @@ std::vector<uint8> FSimulation::Save()
 
 	// 시스템: 이름 + 상태 바이트(길이 포함). 불러올 때 이름으로 짝을 맞추고 길이로 검증한다
 	Writer.WriteUInt32(static_cast<uint32>(Systems.size()));
-	for (const std::unique_ptr<ISimulationSystem>& System : Systems)
+	for (const unique_ptr<ISimulationSystem>& System : Systems)
 	{
 		FArchiveWriter SystemWriter;
 		System->Save(SystemWriter);
@@ -213,7 +213,7 @@ std::vector<uint8> FSimulation::Save()
 	return Writer.TakeBuffer();
 }
 
-bool FSimulation::Load(const std::vector<uint8>& Bytes)
+bool FSimulation::Load(const vector<uint8>& Bytes)
 {
 	FArchiveReader Reader(Bytes);
 
@@ -238,12 +238,12 @@ bool FSimulation::Load(const std::vector<uint8>& Bytes)
 		return false;
 	}
 
-	std::vector<std::vector<uint8>> SystemStates;
+	vector<vector<uint8>> SystemStates;
 	SystemStates.reserve(SystemCount);
 	for (uint32 Index = 0; Index < SystemCount; ++Index)
 	{
-		const std::string Name = Reader.ReadString();
-		std::vector<uint8> State = Reader.ReadBytes();
+		const string Name = Reader.ReadString();
+		vector<uint8> State = Reader.ReadBytes();
 		if (Reader.HasError() || Name != Systems[Index]->GetName())
 		{
 			return false;
@@ -252,7 +252,7 @@ bool FSimulation::Load(const std::vector<uint8>& Bytes)
 	}
 
 	const uint32 PendingCount = Reader.ReadUInt32();
-	std::vector<FPendingCommand> LoadedPending;
+	vector<FPendingCommand> LoadedPending;
 	for (uint32 Index = 0; Index < PendingCount && !Reader.HasError(); ++Index)
 	{
 		FPendingCommand Pending;
@@ -266,7 +266,7 @@ bool FSimulation::Load(const std::vector<uint8>& Bytes)
 	}
 
 	const uint32 LogCount = Reader.ReadUInt32();
-	std::vector<FCommandRecord> LoadedLog;
+	vector<FCommandRecord> LoadedLog;
 	for (uint32 Index = 0; Index < LogCount && !Reader.HasError(); ++Index)
 	{
 		FCommandRecord Record;

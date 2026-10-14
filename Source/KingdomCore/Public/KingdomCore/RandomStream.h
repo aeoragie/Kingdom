@@ -11,7 +11,7 @@ namespace Kingdom
 class FRandomStream
 {
 public:
-	using FState = std::array<uint64, 4>;
+	using FState = array<uint64, 4>;
 
 	explicit KINGDOMCORE_API FRandomStream(uint64 Seed = 0);
 

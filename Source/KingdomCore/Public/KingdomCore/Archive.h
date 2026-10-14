@@ -19,14 +19,14 @@ public:
 	KINGDOMCORE_API void WriteInt32(int32 Value);
 	KINGDOMCORE_API void WriteInt64(int64 Value);
 	KINGDOMCORE_API void WriteBool(bool bValue);
-	KINGDOMCORE_API void WriteString(const std::string& Value);
-	KINGDOMCORE_API void WriteBytes(const std::vector<uint8>& Bytes);
+	KINGDOMCORE_API void WriteString(const string& Value);
+	KINGDOMCORE_API void WriteBytes(const vector<uint8>& Bytes);
 
-	const std::vector<uint8>& GetBuffer() const { return Buffer; }
-	std::vector<uint8> TakeBuffer() { return std::move(Buffer); }
+	const vector<uint8>& GetBuffer() const { return Buffer; }
+	vector<uint8> TakeBuffer() { return std::move(Buffer); }
 
 private:
-	std::vector<uint8> Buffer;
+	vector<uint8> Buffer;
 };
 
 // 읽다가 데이터가 모자라거나 형식이 틀리면 오류 상태가 되고, 이후 읽기는 0을 돌려준다.
@@ -34,7 +34,7 @@ private:
 class FArchiveReader
 {
 public:
-	explicit FArchiveReader(const std::vector<uint8>& InBuffer)
+	explicit FArchiveReader(const vector<uint8>& InBuffer)
 		: Buffer(InBuffer)
 	{
 	}
@@ -45,8 +45,8 @@ public:
 	KINGDOMCORE_API int32 ReadInt32();
 	KINGDOMCORE_API int64 ReadInt64();
 	KINGDOMCORE_API bool ReadBool();
-	KINGDOMCORE_API std::string ReadString();
-	KINGDOMCORE_API std::vector<uint8> ReadBytes();
+	KINGDOMCORE_API string ReadString();
+	KINGDOMCORE_API vector<uint8> ReadBytes();
 
 	void SetError() { bError = true; }
 	bool HasError() const { return bError; }
@@ -55,7 +55,7 @@ public:
 private:
 	bool CanRead(std::size_t Count);
 
-	const std::vector<uint8>& Buffer;
+	const vector<uint8>& Buffer;
 	std::size_t Position = 0;
 	bool bError = false;
 };

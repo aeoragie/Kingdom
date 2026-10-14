@@ -47,13 +47,13 @@ void FArchiveWriter::WriteBool(bool bValue)
 	WriteUInt8(bValue ? 1 : 0);
 }
 
-void FArchiveWriter::WriteString(const std::string& Value)
+void FArchiveWriter::WriteString(const string& Value)
 {
 	WriteUInt32(static_cast<uint32>(Value.size()));
 	Buffer.insert(Buffer.end(), Value.begin(), Value.end());
 }
 
-void FArchiveWriter::WriteBytes(const std::vector<uint8>& Bytes)
+void FArchiveWriter::WriteBytes(const vector<uint8>& Bytes)
 {
 	WriteUInt32(static_cast<uint32>(Bytes.size()));
 	Buffer.insert(Buffer.end(), Bytes.begin(), Bytes.end());
@@ -127,28 +127,28 @@ bool FArchiveReader::ReadBool()
 	return Value == 1;
 }
 
-std::string FArchiveReader::ReadString()
+string FArchiveReader::ReadString()
 {
 	const uint32 Length = ReadUInt32();
 	if (Length > MaxBlobLength || !CanRead(Length))
 	{
 		bError = true;
-		return std::string();
+		return string();
 	}
-	std::string Value(reinterpret_cast<const char*>(Buffer.data() + Position), Length);
+	string Value(reinterpret_cast<const char*>(Buffer.data() + Position), Length);
 	Position += Length;
 	return Value;
 }
 
-std::vector<uint8> FArchiveReader::ReadBytes()
+vector<uint8> FArchiveReader::ReadBytes()
 {
 	const uint32 Length = ReadUInt32();
 	if (Length > MaxBlobLength || !CanRead(Length))
 	{
 		bError = true;
-		return std::vector<uint8>();
+		return vector<uint8>();
 	}
-	std::vector<uint8> Value(Buffer.begin() + static_cast<std::ptrdiff_t>(Position), Buffer.begin() + static_cast<std::ptrdiff_t>(Position + Length));
+	vector<uint8> Value(Buffer.begin() + static_cast<std::ptrdiff_t>(Position), Buffer.begin() + static_cast<std::ptrdiff_t>(Position + Length));
 	Position += Length;
 	return Value;
 }

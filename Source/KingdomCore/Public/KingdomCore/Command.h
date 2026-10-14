@@ -40,7 +40,7 @@ public:
 	virtual bool Load(FArchiveReader& Reader) = 0;
 };
 
-using FCommandFactory = std::unique_ptr<ICommand> (*)();
+using FCommandFactory = unique_ptr<ICommand> (*)();
 
 // 커맨드 로그 한 줄. 받아들인 것과 거부한 것을 모두 남긴다.
 // 세이브는 전체 상태 스냅샷이고, 이 로그는 마지막 세이브 이후 것만 함께 저장한다.
@@ -49,8 +49,8 @@ struct FCommandRecord
 	uint64 Sequence = 0;	// 제출 순번(0부터)
 	uint64 AppliedTick = 0;	// 처리된 틱
 	bool bAccepted = false;
-	std::string Reason;
-	std::shared_ptr<ICommand> Command;
+	string Reason;
+	shared_ptr<ICommand> Command;
 };
 
 } // namespace Kingdom
