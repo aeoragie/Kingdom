@@ -15,6 +15,9 @@ public:
 
 	void Advance(uint32 TickCount) { Tick += TickCount; }
 
+	// 세이브를 불러올 때만 쓴다
+	void Restore(uint64 InTick) { Tick = InTick; }
+
 private:
 	uint64 Tick = 0;
 };
