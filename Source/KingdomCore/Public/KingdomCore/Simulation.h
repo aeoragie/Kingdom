@@ -1,0 +1,54 @@
+#pragma once
+
+#include "KingdomCore/CoreTypes.h"
+#include "KingdomCore/RandomStream.h"
+#include "KingdomCore/SimClock.h"
+
+namespace Kingdom
+{
+
+class FSimulation;
+
+// 틱마다 한 번 도는 규칙 단위(생산, 이동, 전투 …).
+// 시스템은 등록한 순서대로 돈다. 순서도 결정론의 일부다.
+class ISimSystem
+{
+public:
+	virtual ~ISimSystem() = default;
+
+	virtual const char* GetName() const = 0;
+	virtual void Tick(FSimulation& Simulation) = 0;
+};
+
+// 고정 틱 시뮬레이션 루프.
+// 코어는 "틱 N번 진행"만 안다. 틱 하나가 몇 초인지, 배속과 일시정지는 바깥(뷰)이 정한다.
+class FSimulation
+{
+public:
+	KINGDOMCORE_API explicit FSimulation(uint64 Seed);
+	KINGDOMCORE_API ~FSimulation();
+
+	FSimulation(const FSimulation&) = delete;
+	FSimulation& operator=(const FSimulation&) = delete;
+
+	KINGDOMCORE_API void AddSystem(std::unique_ptr<ISimSystem> System);
+
+	// TickCount만큼 틱을 진행한다. 틱마다 모든 시스템을 등록 순서대로 돌린다.
+	KINGDOMCORE_API void Advance(uint32 TickCount);
+
+	uint64 CurrentTick() const { return Clock.CurrentTick(); }
+	uint64 GetSeed() const { return Seed; }
+
+	FRandomStream& GetRandom() { return Random; }
+	const FRandomStream& GetRandom() const { return Random; }
+
+private:
+	void TickOnce();
+
+	uint64 Seed = 0;
+	FSimClock Clock;
+	FRandomStream Random;
+	std::vector<std::unique_ptr<ISimSystem>> Systems;
+};
+
+} // namespace Kingdom

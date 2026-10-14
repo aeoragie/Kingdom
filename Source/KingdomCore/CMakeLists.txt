@@ -21,6 +21,8 @@ if(MSVC)
 endif()
 
 add_library(KingdomCore STATIC
+    Private/RandomStream.cpp
+    Private/Simulation.cpp
     Private/Version.cpp
 )
 target_include_directories(KingdomCore PUBLIC Public)
