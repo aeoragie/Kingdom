@@ -27,6 +27,9 @@
   - 순수 C++ 코어(KingdomCore)는 Claude가 쓰되, 쓰기 전에 설계를 설명하고 승인받는다
   - 깊이: 러프하게 익히고, 필요한 부분은 깊게 판다. 설명은 개념과 왜 그런지 위주로 짧게, 디렉터가 더 묻는 곳만 깊게
 
+## 공부 노트
+- `Study/`: 언리얼 학습 노트. `01.언리얼구조(ARCHITECTURE).md`부터. 깊게 판 주제는 번호를 이어 붙인다.
+
 ## 빌드
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
 - 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStd.h`가 정의해 둔다.
