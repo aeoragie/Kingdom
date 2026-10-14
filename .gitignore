@@ -10,6 +10,7 @@ Platforms/
 .vscode/
 .idea/
 *.sln
+*.slnx
 *.suo
 *.opensdf
 *.sdf

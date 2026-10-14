@@ -17,6 +17,12 @@
 - 코어 기능은 테스트와 함께 만든다(`Source/KingdomCoreTests/`).
 - 작업 단위마다 커밋·푸시한다. 시작할 때 `git pull`.
 
+## 언리얼 학습 (이 프로젝트의 큰 목적)
+- 디렉터는 서버 개발자다. C++과 게임 서버는 잘 알지만 언리얼은 이 프로젝트로 익힌다.
+- 단계마다 먼저 무엇을 왜 만드는지, 구조가 어떻게 되는지 설명하고 승인받은 뒤 진행한다.
+- 언리얼 객체·시스템(UObject, UCLASS, GameInstance, 모듈과 Build.cs, UBT·UHT, GC 등)을 쓰면 그것이 무엇이고 왜 쓰는지 서버 개발 비유로 설명한다.
+- 직접 만들어 버리지 않고 만드는 방법을 설명한다. 디렉터가 직접 해 보는 것이 기본이다(범위는 아래 "진행 방식").
+
 ## 빌드
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
 - 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStd.h`가 정의해 둔다.
