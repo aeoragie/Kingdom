@@ -43,3 +43,4 @@ add_executable(KingdomCoreTests
 target_include_directories(KingdomCoreTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests)
 target_link_libraries(KingdomCoreTests PRIVATE KingdomCore)
 add_test(NAME KingdomCoreTests COMMAND KingdomCoreTests)
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT KingdomCoreTests)
