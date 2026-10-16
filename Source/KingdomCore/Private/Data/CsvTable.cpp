@@ -1,55 +1,12 @@
 #include "KingdomCore/Data/CsvTable.h"
 
+#include "KingdomCore/Encoding.h"
+
 namespace Kingdom
 {
 
 namespace
 {
-
-// 바이트열이 올바른 UTF-8인지. CP949로 저장된 한글은 여기서 걸린다.
-bool IsValidUtf8(const string& Text)
-{
-	size_t Index = 0;
-	while (Index < Text.size())
-	{
-		const uint8 Lead = static_cast<uint8>(Text[Index]);
-		size_t Length = 0;
-		if (Lead < 0x80)
-		{
-			Length = 1;
-		}
-		else if ((Lead & 0xE0) == 0xC0 && Lead >= 0xC2)
-		{
-			Length = 2;
-		}
-		else if ((Lead & 0xF0) == 0xE0)
-		{
-			Length = 3;
-		}
-		else if ((Lead & 0xF8) == 0xF0 && Lead <= 0xF4)
-		{
-			Length = 4;
-		}
-		else
-		{
-			return false;
-		}
-
-		if (Index + Length > Text.size())
-		{
-			return false;
-		}
-		for (size_t Offset = 1; Offset < Length; ++Offset)
-		{
-			if ((static_cast<uint8>(Text[Index + Offset]) & 0xC0) != 0x80)
-			{
-				return false;
-			}
-		}
-		Index += Length;
-	}
-	return true;
-}
 
 bool IsEmptyRecord(const vector<string>& Fields)
 {
@@ -84,18 +41,16 @@ bool FCsvTable::Parse(const string& Text, const string& InSourceName, FCsvTable&
 		OutErrors.push_back({InSourceName, Line, string(), Message});
 	};
 
-	if (!IsValidUtf8(Text))
+	// 데이터 파일은 UTF-8만 받는다. CP949로 저장된 한글은 여기서 걸린다.
+	const IEncoding& Utf8 = GetEncoding(EEncoding::Utf8);
+	if (!Utf8.IsValid(Text))
 	{
-		AddError(0, "not valid UTF-8 (save as 'CSV UTF-8' in Excel)");
+		AddError(0, string("not valid ") + Utf8.GetName() + " (save as 'CSV UTF-8' in Excel)");
 		return false;
 	}
 
-	// UTF-8 BOM(엑셀의 "CSV UTF-8" 저장이 붙인다)
-	size_t Position = 0;
-	if (Text.size() >= 3 && Text.compare(0, 3, "\xEF\xBB\xBF") == 0)
-	{
-		Position = 3;
-	}
+	// BOM(엑셀의 "CSV UTF-8" 저장이 붙인다)은 건너뛴다
+	size_t Position = Utf8.GetBomLength(Text);
 
 	// 레코드(논리적인 한 행)를 하나씩 읽는다. 따옴표 안의 줄바꿈 때문에 레코드가 여러 줄일 수 있다.
 	uint32 Line = 1;
