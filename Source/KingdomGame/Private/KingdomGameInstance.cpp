@@ -1,26 +1,28 @@
 #include "KingdomGameInstance.h"
 
-#include "Engine/Engine.h"
+#include "KingdomSimulationSubsystem.h"
 
-#include "KingdomCore/SimulationClock.h"
-#include "KingdomCore/Version.h"
+DEFINE_LOG_CATEGORY_STATIC(LogKingdomConsole, Log, All);
 
-void UKingdomGameInstance::Init()
+void UKingdomGameInstance::KingdomSpeed(int32 Multiplier)
 {
-	Super::Init();
-
-	Kingdom::FSimulationClock Clock;
-	Clock.Advance(10);
-
-	const FString Message = FString::Printf(
-		TEXT("KingdomCore %hs | SimulationClock tick=%llu"),
-		Kingdom::CoreVersion(),
-		static_cast<unsigned long long>(Clock.CurrentTick()));
-
-	UE_LOG(LogTemp, Log, TEXT("%s"), *Message);
-
-	if (GEngine)
+	// GetSubsystem<>(): 이 GameInstance에 붙은 서브시스템을 타입으로 찾는다. 서비스 로케이터 조회와 같다.
+	UKingdomSimulationSubsystem* SimulationSubsystem = GetSubsystem<UKingdomSimulationSubsystem>();
+	if (!SimulationSubsystem)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Yellow, Message);
+		return;
+	}
+
+	if (!SimulationSubsystem->SetSpeed(Multiplier))
+	{
+		UE_LOG(LogKingdomConsole, Warning, TEXT("KingdomSpeed: 1 ~ %d"), UKingdomSimulationSubsystem::MaxSpeed);
+	}
+}
+
+void UKingdomGameInstance::KingdomPause()
+{
+	if (UKingdomSimulationSubsystem* SimulationSubsystem = GetSubsystem<UKingdomSimulationSubsystem>())
+	{
+		SimulationSubsystem->TogglePause();
 	}
 }

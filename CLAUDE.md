@@ -48,7 +48,7 @@ README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발�
 - [x] 커맨드 패턴(ICommand, 다음 틱 처음에 제출 순서대로 검증·적용, 커맨드 로그) (2026-10-14)
 - [x] 세이브/로드(FArchiveWriter/Reader, 전체 상태 스냅샷 + 마지막 세이브 이후 커맨드 로그, 커맨드 종류 등록표) (2026-10-14)
 - [x] 코어 테스트용 VS 솔루션(`Tools/GenerateCoreTests`, 디렉터 작성) (2026-10-15)
-- [ ] **다음(2026-10-16~): 4단계 배속·일시정지** - `UKingdomSimulationSubsystem`(UGameInstanceSubsystem + FTickableGameObject, TUniquePtr<FSimulation>)부터. 디렉터가 작성, Claude는 단계 안내·리뷰.<br>추천값(디렉터 승인 대기): 틱 간격 3.75초 상수, 배속 1·2·4·8(콘솔에서 테스트용 64까지), 시드 고정, GameInstance Init()의 Phase 0 테스트 삭제, 콘솔 명령은 GameInstance의 UFUNCTION(Exec) KingdomSpeed·KingdomPause
+- [x] 4단계 배속·일시정지: `UKingdomSimulationSubsystem`(UGameInstanceSubsystem + FTickableGameObject, 생성자에서 Never로 만들고 Initialize에서 켬, TUniquePtr<FSimulation> + FTickPacer), 콘솔 명령 `KingdomSpeed`(1~64)·`KingdomPause`(UKingdomGameInstance의 UFUNCTION(Exec)), 화면 표시. 틱 간격 3.75초, 시드 1. 이번 건만 Claude가 작성(A안 예외), 디렉터가 PIE에서 표시·배속 확인. 학습 노트 `Study/03` (2026-10-16)
 - [x] CMakeLists 폴더 자동 수집, MiniTest 이름 필터 (2026-10-16)
 - [x] 누적기 `FTickPacer`(코어, 정수 마이크로초, 배속·일시정지, 한 번에 받는 실제 시간 상한 0.25초: 의도치 않게 멈춰 있던 시간은 게임 시간으로 치지 않음) + 테스트 6개 (2026-10-16)
-- [ ] 1차 기반의 나머지: 데이터 파이프라인
+- [ ] **다음: 1차 기반의 나머지, 데이터 파이프라인** (엑셀 → CSV → DataTable → 코어 구조체). 시작 전에 설계 설명·승인
