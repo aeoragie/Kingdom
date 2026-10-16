@@ -20,3 +20,6 @@ Platforms/
 # OS
 Thumbs.db
 Desktop.ini
+
+# VS가 "인코딩하여 저장" 때 남기는 임시 폴더
+enc_temp_folder/
