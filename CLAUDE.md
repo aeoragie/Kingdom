@@ -19,6 +19,7 @@
 - 결정론: 정수 틱, 부동소수점 누적 금지, 확률은 코어 상태의 시드 PRNG.
 - 규칙 데이터: `Data/`의 CSV가 원본(UTF-8). 숫자는 정수, 비율은 만분율(`BasisPoints`, 100 = 1%, `BasisPointsPerOne`). 코드가 종류를 정한 것은 파일에 문자열·메모리에 enum(`KINGDOM_DEFINE_ENUM`). 데이터 오류가 하나라도 있으면 시작하지 않는다. 코어는 파일을 열지 않는다(바깥이 내용을 넘김)
 - 코어가 쓰는 표준 헤더는 `CoreStandard.h`에만 모은다(개별 파일에서 `<algorithm>` 등을 직접 include하지 않는다)
+- 인덱스·키로 꺼내는 함수(`GetCell`, `GetTerrain`, `EnumToString` 등)는 항상 범위를 검사하고, 넘으면 `KINGDOM_CHECK`(`Check.h`, 릴리스에서도 켜짐)로 멈춘다. 바깥 입력(데이터 파일, 세이브)을 읽는 함수는 검사 대신 실패·오류 목록을 돌려준다
 - 코어 기능은 테스트와 함께 만든다(`Source/KingdomCoreTests/`).
 - 작업 단위마다 커밋·푸시한다. 시작할 때 `git pull`.
 

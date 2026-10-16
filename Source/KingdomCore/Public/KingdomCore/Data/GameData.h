@@ -24,7 +24,12 @@ struct FGameDataSources
 class FGameData
 {
 public:
-	const FTerrainDefinition& GetTerrain(ETerrainType Type) const { return Terrains[static_cast<size_t>(Type)]; }
+	const FTerrainDefinition& GetTerrain(ETerrainType Type) const
+	{
+		const size_t Index = static_cast<size_t>(Type);
+		KINGDOM_CHECK(Index < Terrains.size());
+		return Terrains[Index];
+	}
 
 	// 오류가 하나라도 있으면 OutData는 쓰지 않는다(일부만 읽힌 데이터로 게임이 돌지 않게).
 	KINGDOMCORE_API static vector<FDataError> Load(const FGameDataSources& Sources, FGameData& OutData);

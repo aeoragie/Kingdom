@@ -1,5 +1,6 @@
 #pragma once
 
+#include "KingdomCore/Check.h"
 #include "KingdomCore/CoreTypes.h"
 
 // 코드가 종류를 못 박은 enum(지형, 자원, 병종 계열 등)을 정의한다.
@@ -30,7 +31,8 @@
 	inline const char* EnumToString(EnumName Value) \
 	{ \
 		const size_t Index = static_cast<size_t>(Value); \
-		return Index < CountName ? EnumName##Names[Index] : "Invalid"; \
+		KINGDOM_CHECK(Index < CountName); \
+		return EnumName##Names[Index]; \
 	} \
 	\
 	inline bool StringToEnum(const string& Text, EnumName& OutValue) \

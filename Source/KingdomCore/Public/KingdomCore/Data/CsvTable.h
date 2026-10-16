@@ -1,5 +1,6 @@
 #pragma once
 
+#include "KingdomCore/Check.h"
 #include "KingdomCore/CoreTypes.h"
 
 namespace Kingdom
@@ -33,10 +34,19 @@ public:
 	// 열 이름으로 열 번호를 찾는다. 없으면 false.
 	KINGDOMCORE_API bool FindColumn(const string& ColumnName, size_t& OutColumn) const;
 
-	const string& GetCell(size_t Row, size_t Column) const { return Rows[Row][Column]; }
+	const string& GetCell(size_t Row, size_t Column) const
+	{
+		KINGDOM_CHECK(Row < Rows.size());
+		KINGDOM_CHECK(Column < Rows[Row].size());
+		return Rows[Row][Column];
+	}
 
 	// 그 행이 파일의 몇 번째 줄에서 시작하는지(오류 메시지용)
-	uint32 GetLine(size_t Row) const { return RowLines[Row]; }
+	uint32 GetLine(size_t Row) const
+	{
+		KINGDOM_CHECK(Row < RowLines.size());
+		return RowLines[Row];
+	}
 
 private:
 	string SourceName;

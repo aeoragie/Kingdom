@@ -51,5 +51,15 @@ target_include_directories(KingdomCoreTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/
 target_link_libraries(KingdomCoreTests PRIVATE KingdomCore)
 # 테스트가 실제 규칙 데이터(저장소 루트의 Data/)를 읽는다
 target_compile_definitions(KingdomCoreTests PRIVATE KINGDOM_DATA_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../../Data")
+
+# Data/ 파일을 VS 솔루션 탐색기에 보이게 한다(컴파일하지 않는다). 테스트가 실행할 때 읽으므로
+# CSV만 고쳤으면 다시 빌드하지 않고 테스트만 다시 돌리면 된다.
+file(GLOB_RECURSE KingdomDataFiles CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Data/*.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Data/*.md
+)
+target_sources(KingdomCoreTests PRIVATE ${KingdomDataFiles})
+set_source_files_properties(${KingdomDataFiles} PROPERTIES HEADER_FILE_ONLY ON)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/../.. FILES ${KingdomDataFiles})
 add_test(NAME KingdomCoreTests COMMAND KingdomCoreTests)
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT KingdomCoreTests)
