@@ -4,6 +4,7 @@
 #include "KingdomCore/RandomStream.h"
 #include "KingdomCore/SimulationClock.h"
 #include "KingdomCore/Simulation.h"
+#include "KingdomCore/TickPacer.h"
 #include "KingdomCore/Version.h"
 
 #include <cstring>
@@ -29,6 +30,81 @@ TEST_CASE(SimulationClock_AdvanceAccumulates)
 	Clock.Advance(0);
 	Clock.Advance(7);
 	CHECK(Clock.CurrentTick() == 10);
+}
+
+// ---------------------------------------------------------------------------
+// FTickPacer
+
+namespace
+{
+
+constexpr Kingdom::uint64 TestTickInterval = 3750000; // 3.75초
+constexpr Kingdom::uint64 NoElapsedLimit = 0;
+
+} // namespace
+
+TEST_CASE(TickPacer_OneTickPerIntervalAtNormalSpeed)
+{
+	Kingdom::FTickPacer Pacer(TestTickInterval, NoElapsedLimit);
+	CHECK(Pacer.GetSpeed() == 1);
+	CHECK(Pacer.Consume(3740000) == 0);
+	CHECK(Pacer.Consume(10000) == 1);
+	CHECK(Pacer.Consume(0) == 0);
+}
+
+TEST_CASE(TickPacer_SpeedMultipliesElapsedTime)
+{
+	Kingdom::FTickPacer Pacer(TestTickInterval, NoElapsedLimit);
+	Pacer.SetSpeed(8);
+	CHECK(Pacer.Consume(TestTickInterval) == 8);
+}
+
+TEST_CASE(TickPacer_PauseCountsNoTimeAndLeavesNoBacklog)
+{
+	Kingdom::FTickPacer Pacer(TestTickInterval, NoElapsedLimit);
+	Pacer.SetPaused(true);
+	CHECK(Pacer.Consume(10 * TestTickInterval) == 0);
+
+	Pacer.SetPaused(false);
+	CHECK(Pacer.Consume(16000) == 0);
+	CHECK(Pacer.Consume(TestTickInterval - 16000) == 1);
+}
+
+TEST_CASE(TickPacer_LongStallCountsOnlyUpToLimit)
+{
+	// 1시간 멈춰 있다가 돌아와도 0.25초만 흐른 것으로 친다
+	constexpr Kingdom::uint64 OneHour = 3600ull * 1000000;
+
+	Kingdom::FTickPacer NormalSpeed(TestTickInterval);
+	CHECK(NormalSpeed.Consume(OneHour) == 0);
+
+	// 64배속: 0.25초 x 64 = 16초, 4틱이고 1초가 남는다
+	Kingdom::FTickPacer FastSpeed(TestTickInterval);
+	FastSpeed.SetSpeed(64);
+	CHECK(FastSpeed.Consume(OneHour) == 4);
+
+	// 다음 프레임은 평소대로: 1초 + 16ms x 64 = 2.024초, 0틱
+	CHECK(FastSpeed.Consume(16000) == 0);
+}
+
+TEST_CASE(TickPacer_SmallFramesAddUpExactly)
+{
+	// 15.625ms x 240 = 정확히 3.75초, 마지막 프레임에서 정확히 1틱
+	Kingdom::FTickPacer Pacer(TestTickInterval);
+	Kingdom::uint32 TotalTicks = 0;
+	for (Kingdom::int32 Frame = 0; Frame < 239; ++Frame)
+	{
+		TotalTicks += Pacer.Consume(15625);
+	}
+	CHECK(TotalTicks == 0);
+	CHECK(Pacer.Consume(15625) == 1);
+}
+
+TEST_CASE(TickPacer_ZeroSpeedMeansNormalSpeed)
+{
+	Kingdom::FTickPacer Pacer(TestTickInterval);
+	Pacer.SetSpeed(0);
+	CHECK(Pacer.GetSpeed() == 1);
 }
 
 // ---------------------------------------------------------------------------
