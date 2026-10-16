@@ -20,12 +20,16 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
-add_library(KingdomCore STATIC
-    Private/Archive.cpp
-    Private/RandomStream.cpp
-    Private/Simulation.cpp
-    Private/Version.cpp
+# 소스는 폴더째 모은다(UBT와 같은 규칙: 폴더 = 모듈). 파일을 더해도 이 목록은 고치지 않는다.
+# CONFIGURE_DEPENDS: 빌드할 때마다 파일 목록이 바뀌었는지 보고, 바뀌었으면 CMake가 다시 구성한다.
+# 헤더는 빌드에 필요 없지만 VS 솔루션 탐색기에 보이도록 함께 넣는다.
+file(GLOB_RECURSE KingdomCoreSources CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Private/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Private/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Public/*.h
 )
+add_library(KingdomCore STATIC ${KingdomCoreSources})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${KingdomCoreSources})
 target_include_directories(KingdomCore PUBLIC Public)
 
 if(MSVC)
@@ -37,9 +41,12 @@ endif()
 enable_testing()
 
 # 테스트는 UBT가 모듈 소스로 긁어가지 않도록 모듈 밖(Source/KingdomCoreTests)에 둔다
-add_executable(KingdomCoreTests
-    ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests/TestMain.cpp
+file(GLOB_RECURSE KingdomCoreTestSources CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests/*.h
 )
+add_executable(KingdomCoreTests ${KingdomCoreTestSources})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests FILES ${KingdomCoreTestSources})
 target_include_directories(KingdomCoreTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests)
 target_link_libraries(KingdomCoreTests PRIVATE KingdomCore)
 add_test(NAME KingdomCoreTests COMMAND KingdomCoreTests)

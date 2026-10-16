@@ -4,6 +4,7 @@
 // 돈다")를 넘기기 위한 것. 본격적인 프레임워크가 필요해지면 교체한다.
 
 #include <cstdio>
+#include <cstring>
 #include <vector>
 
 namespace MiniTest
@@ -28,11 +29,20 @@ struct FRegistrar
 	FRegistrar(const char* Name, void (*Func)()) { Registry().push_back({Name, Func}); }
 };
 
-inline int RunAll()
+// Filter가 있으면 이름에 그 글자가 든 테스트만 돈다(예: "SaveLoad").
+// 맞는 테스트가 하나도 없으면 실패로 끝낸다(오타로 아무것도 안 돌고 통과하는 것을 막는다).
+inline int RunAll(const char* Filter = nullptr)
 {
+	int RunTests = 0;
 	int FailedTests = 0;
 	for (const FTest& Test : Registry())
 	{
+		if (Filter && !std::strstr(Test.Name, Filter))
+		{
+			continue;
+		}
+
+		++RunTests;
 		const int Before = FailedCheckCount;
 		Test.Func();
 		const bool bPassed = (FailedCheckCount == Before);
@@ -42,7 +52,14 @@ inline int RunAll()
 			++FailedTests;
 		}
 	}
-	std::printf("%zu tests, %d failed\n", Registry().size(), FailedTests);
+
+	if (RunTests == 0)
+	{
+		std::printf("No tests match \"%s\"\n", Filter ? Filter : "");
+		return 1;
+	}
+
+	std::printf("%d tests, %d failed\n", RunTests, FailedTests);
 	return FailedTests == 0 ? 0 : 1;
 }
 

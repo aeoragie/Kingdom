@@ -516,7 +516,8 @@ TEST_CASE(SaveLoad_RejectsDifferentSystems)
 	CHECK(!NoSystems.Load(Snapshot));
 }
 
-int main()
+// 인자 없이: 전체. 인자 하나: 이름에 그 글자가 든 테스트만 (예: KingdomCoreTests.exe SaveLoad)
+int main(int ArgumentCount, char** Arguments)
 {
-	return MiniTest::RunAll();
+	return MiniTest::RunAll(ArgumentCount > 1 ? Arguments[1] : nullptr);
 }

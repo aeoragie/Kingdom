@@ -34,7 +34,7 @@
 - `Study/`: 언리얼 학습 노트. `01.언리얼구조(ARCHITECTURE).md`부터. 깊게 판 주제는 번호를 이어 붙인다.
 
 ## 빌드
-- `Tools/`: `GenerateProjectFiles`(VS 솔루션 다시 생성), `BuildCore`(코어 CMake 빌드 + 테스트), `BuildEditor`(에디터 빌드), `GenerateCoreTests`(코어 테스트용 VS 솔루션을 `Intermediate/CMakeVS`에 만들고 연다. F5로 테스트·디버깅. 생성물이라 VS에서 프로젝트를 고치지 않고 `CMakeLists.txt`를 고친다). 내용은 `.ps1`(PowerShell), 더블클릭은 같은 이름의 `.bat`. 공통 경로는 `Environment.ps1`. 엔진 경로가 다르면 환경 변수 `KINGDOM_UE_ROOT`.
+- `Tools/`: `GenerateProjectFiles`(VS 솔루션 다시 생성), `BuildCore`(코어 CMake 빌드 + 테스트), `BuildEditor`(에디터 빌드), `GenerateCoreTests`(코어 테스트용 VS 솔루션을 `Intermediate/CMakeVS`에 만들고 연다. F5로 테스트·디버깅. 생성물이라 VS에서 프로젝트를 고치지 않고 `CMakeLists.txt`를 고친다). 코어·테스트 소스는 폴더째 모으므로(`GLOB_RECURSE … CONFIGURE_DEPENDS`, UBT와 같은 규칙) 파일을 더해도 CMakeLists는 고치지 않는다. 테스트 하나만: `KingdomCoreTests.exe <이름 일부>`(VS는 프로젝트 속성 › 디버깅 › 명령 인수). 내용은 `.ps1`(PowerShell), 더블클릭은 같은 이름의 `.bat`. 공통 경로는 `Environment.ps1`. 엔진 경로가 다르면 환경 변수 `KINGDOM_UE_ROOT`.
 - 스크립트는 PowerShell로 쓴다(UTF-8 BOM, CRLF). 더블클릭이 필요하면 한 줄짜리 `.bat` 실행기를 둔다.
 README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발자 명령 프롬프트에 들어 있다(일반 셸 PATH에는 없음).
 - 코어 헤더는 explicit·virtual 뒤에 `KINGDOMCORE_API`를 둔다. UE 헤더 없이 DLLEXPORT/DLLIMPORT를 쓰도록 `CoreStandard.h`가 정의해 둔다.
@@ -49,5 +49,6 @@ README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발�
 - [x] 세이브/로드(FArchiveWriter/Reader, 전체 상태 스냅샷 + 마지막 세이브 이후 커맨드 로그, 커맨드 종류 등록표) (2026-10-14)
 - [x] 코어 테스트용 VS 솔루션(`Tools/GenerateCoreTests`, 디렉터 작성) (2026-10-15)
 - [ ] **다음(2026-10-16~): 4단계 배속·일시정지** - `UKingdomSimulationSubsystem`(UGameInstanceSubsystem + FTickableGameObject, TUniquePtr<FSimulation>)부터. 디렉터가 작성, Claude는 단계 안내·리뷰.<br>추천값(디렉터 승인 대기): 틱 간격 3.75초 상수, 배속 1·2·4·8(콘솔에서 테스트용 64까지), 한 프레임 상한 10틱, 시드 고정, GameInstance Init()의 Phase 0 테스트 삭제, 콘솔 명령은 GameInstance의 UFUNCTION(Exec) KingdomSpeed·KingdomPause
-- [ ] 열린 제안(디렉터 결정 대기): 누적기를 코어 `FTickPacer`(정수 마이크로초, 테스트 가능)로 둘지 서브시스템 안에 둘지 / CMakeLists를 `file(GLOB_RECURSE … CONFIGURE_DEPENDS)`로 바꿔 파일 목록을 손대지 않게 할지 / MiniTest 테스트 이름 필터
+- [x] CMakeLists 폴더 자동 수집, MiniTest 이름 필터 (2026-10-16)
+- [ ] 누적기는 코어 `FTickPacer`로 (2026-10-16 디렉터 결정 B). Claude가 설계 승인 뒤 테스트와 함께 작성, 서브시스템은 Consume 결과로 Advance만
 - [ ] 1차 기반의 나머지: 데이터 파이프라인
