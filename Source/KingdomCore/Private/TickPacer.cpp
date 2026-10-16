@@ -1,8 +1,5 @@
 #include "KingdomCore/TickPacer.h"
 
-#include <algorithm>
-#include <limits>
-
 namespace Kingdom
 {
 

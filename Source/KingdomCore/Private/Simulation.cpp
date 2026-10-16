@@ -2,8 +2,6 @@
 
 #include "KingdomCore/Archive.h"
 
-#include <cstring>
-
 namespace Kingdom
 {
 

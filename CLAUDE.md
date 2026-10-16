@@ -17,6 +17,8 @@
 - STL 컨테이너와 스마트 포인터(`vector`, `array`, `string`, `unique_ptr`, `shared_ptr`)는 `Kingdom` 네임스페이스 안에서 `std::` 없이 쓴다(`CoreStandard.h`의 `using std::…`). 전역 `using namespace std`는 쓰지 않는다. 함수(`std::move`, `std::strcmp` 등)는 `std::`를 붙인다. 정수 타입은 `CoreTypes.h`의 UE식 별칭(`int32`, `uint64` 등)과 `size_t`·`ptrdiff_t`만 쓴다(`uint64_t` 같은 표준 이름은 쓰지 않는다).
 - KingdomCore에 UE 헤더를 넣지 않는다. UE 코드는 코어 상태를 직접 고치지 않고 커맨드만 제출한다.
 - 결정론: 정수 틱, 부동소수점 누적 금지, 확률은 코어 상태의 시드 PRNG.
+- 규칙 데이터: `Data/`의 CSV가 원본(UTF-8). 숫자는 정수, 비율은 만분율(`BasisPoints`, 100 = 1%, `BasisPointsPerOne`). 코드가 종류를 정한 것은 파일에 문자열·메모리에 enum(`KINGDOM_DEFINE_ENUM`). 데이터 오류가 하나라도 있으면 시작하지 않는다. 코어는 파일을 열지 않는다(바깥이 내용을 넘김)
+- 코어가 쓰는 표준 헤더는 `CoreStandard.h`에만 모은다(개별 파일에서 `<algorithm>` 등을 직접 include하지 않는다)
 - 코어 기능은 테스트와 함께 만든다(`Source/KingdomCoreTests/`).
 - 작업 단위마다 커밋·푸시한다. 시작할 때 `git pull`.
 
@@ -51,4 +53,6 @@ README › KingdomCore 빌드 & 테스트, UE 빌드. cmake·ninja는 VS 개발�
 - [x] 4단계 배속·일시정지: `UKingdomSimulationSubsystem`(UGameInstanceSubsystem + FTickableGameObject, 생성자에서 Never로 만들고 Initialize에서 켬, TUniquePtr<FSimulation> + FTickPacer), 콘솔 명령 `KingdomSpeed`(1~64)·`KingdomPause`(UKingdomGameInstance의 UFUNCTION(Exec)), 화면 표시. 틱 간격 3.75초, 시드 1. 이번 건만 Claude가 작성(A안 예외), 디렉터가 PIE에서 표시·배속 확인. 학습 노트 `Study/03` (2026-10-16)
 - [x] CMakeLists 폴더 자동 수집, MiniTest 이름 필터 (2026-10-16)
 - [x] 누적기 `FTickPacer`(코어, 정수 마이크로초, 배속·일시정지, 한 번에 받는 실제 시간 상한 0.25초: 의도치 않게 멈춰 있던 시간은 게임 시간으로 치지 않음) + 테스트 6개 (2026-10-16)
-- [ ] **다음: 1차 기반의 나머지, 데이터 파이프라인** (엑셀 → CSV → DataTable → 코어 구조체). 시작 전에 설계 설명·승인
+- [x] 데이터 파이프라인 코어(2026-10-16): `Data/*.csv`(원본, UTF-8) → `FCsvTable` → `FGameData::Load`(오류 목록) / `LoadOrPanic`(콘솔·서버용). 지형 표 `Data/Terrain.csv`(값은 임시) + `ETerrainType`(`KINGDOM_DEFINE_ENUM`으로 EnumToString·StringToEnum). 테스트 14개(실제 CSV 읽기 포함)
+- [ ] **다음: UE에서 데이터 읽기 (디렉터)** - 서브시스템 Initialize에서 `Data/Terrain.csv`를 바이트로 읽어(`FFileHelper::LoadFileToArray`) `FGameData::Load`에 넘기고, 오류가 있으면 로그에 모두 남기고 플레이 중단(에디터) / Fatal(패키지 게임). 패키징 때 `Data/`를 비 에셋 폴더로 포함하는 설정은 그때
+- [ ] 그다음: 1차 필드 묶음(축좌표, A*, 지형 데이터 사용 …). 시작 전에 설계 설명·승인

@@ -4,9 +4,15 @@
 // 모은다 — 개별 파일에서 <cstdint> 같은 걸 직접 포함하지 않는다.
 // UE 헤더는 절대 넣지 않는다 (CoreMinimal.h 한 줄이면 코어 분리가 끝난다).
 
+#include <algorithm>
 #include <array>
+#include <charconv>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <limits>
 #include <memory>
 #include <string>
 #include <utility>

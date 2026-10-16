@@ -49,5 +49,7 @@ add_executable(KingdomCoreTests ${KingdomCoreTestSources})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests FILES ${KingdomCoreTestSources})
 target_include_directories(KingdomCoreTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../KingdomCoreTests)
 target_link_libraries(KingdomCoreTests PRIVATE KingdomCore)
+# 테스트가 실제 규칙 데이터(저장소 루트의 Data/)를 읽는다
+target_compile_definitions(KingdomCoreTests PRIVATE KINGDOM_DATA_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../../Data")
 add_test(NAME KingdomCoreTests COMMAND KingdomCoreTests)
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT KingdomCoreTests)

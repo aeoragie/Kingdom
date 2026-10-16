@@ -1,0 +1,7 @@
+Id,Name,MoveCost,DefenseBonusBasisPoints
+Plains,평지,1,0
+Hills,구릉,2,1000
+Mountains,산악,3,3000
+River,강,2,2000
+Forest,숲,2,1000
+Marsh,습지,3,0
