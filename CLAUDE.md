@@ -14,7 +14,7 @@
 - 코드는 언리얼 코딩 컨벤션(README › 컨벤션). KingdomCore에도 같이 적용한다.
 - 이름은 줄여 쓰지 않는다(예: `Sim`이 아니라 `Simulation`). 언리얼 API가 이미 쓰는 이름(`RandRange` 등)과 업계에서 굳어진 약어(UE, GC, UI 등)만 예외.
 - 멤버 변수 이름도 언리얼식(접두어 없음, PascalCase, bool은 `b`)을 따른다.
-- STL 컨테이너와 스마트 포인터(`vector`, `array`, `string`, `unique_ptr`, `shared_ptr`)는 `Kingdom` 네임스페이스 안에서 `std::` 없이 쓴다(`CoreStandard.h`의 `using std::…`). 전역 `using namespace std`는 쓰지 않는다. 함수(`std::move`, `std::strcmp` 등)는 `std::`를 붙인다.
+- STL 컨테이너, 스마트 포인터, 정수 타입(`vector`, `array`, `string`, `unique_ptr`, `shared_ptr`, `uint64_t`, `size_t` 등)은 `Kingdom` 네임스페이스 안에서 `std::` 없이 쓴다(`CoreStandard.h`의 `using std::…`). 전역 `using namespace std`는 쓰지 않는다. 함수(`std::move`, `std::strcmp` 등)는 `std::`를 붙인다.
 - KingdomCore에 UE 헤더를 넣지 않는다. UE 코드는 코어 상태를 직접 고치지 않고 커맨드만 제출한다.
 - 결정론: 정수 틱, 부동소수점 누적 금지, 확률은 코어 상태의 시드 PRNG.
 - 코어 기능은 테스트와 함께 만든다(`Source/KingdomCoreTests/`).

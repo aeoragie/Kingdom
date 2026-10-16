@@ -59,7 +59,7 @@ void FArchiveWriter::WriteBytes(const vector<uint8>& Bytes)
 	Buffer.insert(Buffer.end(), Bytes.begin(), Bytes.end());
 }
 
-bool FArchiveReader::CanRead(std::size_t Count)
+bool FArchiveReader::CanRead(size_t Count)
 {
 	if (bError || Buffer.size() - Position < Count)
 	{
@@ -148,7 +148,7 @@ vector<uint8> FArchiveReader::ReadBytes()
 		bError = true;
 		return vector<uint8>();
 	}
-	vector<uint8> Value(Buffer.begin() + static_cast<std::ptrdiff_t>(Position), Buffer.begin() + static_cast<std::ptrdiff_t>(Position + Length));
+	vector<uint8> Value(Buffer.begin() + static_cast<ptrdiff_t>(Position), Buffer.begin() + static_cast<ptrdiff_t>(Position + Length));
 	Position += Length;
 	return Value;
 }

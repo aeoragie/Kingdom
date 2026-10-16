@@ -53,10 +53,10 @@ public:
 	bool IsAtEnd() const { return Position == Buffer.size(); }
 
 private:
-	bool CanRead(std::size_t Count);
+	bool CanRead(size_t Count);
 
 	const vector<uint8>& Buffer;
-	std::size_t Position = 0;
+	size_t Position = 0;
 	bool bError = false;
 };
 

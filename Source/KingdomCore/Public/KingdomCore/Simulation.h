@@ -80,7 +80,7 @@ public:
 
 	// 처리된 커맨드 기록(받아들인 것과 거부한 것 모두, 마지막 세이브 이후)
 	const vector<FCommandRecord>& GetCommandLog() const { return CommandLog; }
-	std::size_t GetPendingCommandCount() const { return PendingCommands.size(); }
+	size_t GetPendingCommandCount() const { return PendingCommands.size(); }
 
 private:
 	void TickOnce();

@@ -37,7 +37,8 @@
 	#define KINGDOMCORE_API
 #endif
 
-// STL 컨테이너와 스마트 포인터는 Kingdom 네임스페이스 안에서 std:: 없이 쓴다.
+// STL 컨테이너, 스마트 포인터, 정수 타입(uint64_t, size_t 등)은 Kingdom 네임스페이스 안에서 std:: 없이 쓴다.
+// <cstdint>·<cstddef>는 표준상 std:: 안에만 있다고 보장되므로 여기서 들여온다.
 // 전역 using namespace std는 쓰지 않는다. 코어 헤더는 UE 모듈에서도 include되므로
 // 전역에 풀면 UE·Windows 헤더의 이름(byte, min, max 등)과 충돌한다.
 // 함수(std::move, std::strcmp 등)는 ADL 문제를 피하려고 std::를 그대로 붙인다.
@@ -49,5 +50,16 @@ using std::shared_ptr;
 using std::string;
 using std::unique_ptr;
 using std::vector;
+
+using std::int8_t;
+using std::int16_t;
+using std::int32_t;
+using std::int64_t;
+using std::uint8_t;
+using std::uint16_t;
+using std::uint32_t;
+using std::uint64_t;
+using std::size_t;
+using std::ptrdiff_t;
 
 } // namespace Kingdom
